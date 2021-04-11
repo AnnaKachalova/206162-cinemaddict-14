@@ -55,4 +55,4 @@ for (let i = 0; i < MOST_COMMITED_COUNT; i++) {
   render(topMostCommited, createCardTemplate(cards[i]), 'beforeend');
 }
 
-//render(siteMainElement, createFilmDetailsTemplate(), 'beforeend');
+render(siteMainElement, createFilmDetailsTemplate(cards[0]), 'beforeend');
