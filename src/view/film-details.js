@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { humanizeCommentDate } from '../utils.js';
 
 const getGenres = genres => {
   return `${Object.values(genres)
@@ -17,9 +17,7 @@ const getComments = comments => {
         <p class="film-details__comment-text">${text}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${autor}</span>
-          <span class="film-details__comment-day">${dayjs(data).format(
-            'YYYY/MM/DD HH:mm'
-          )}</span>
+          <span class="film-details__comment-day">${humanizeCommentDate(data)}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
