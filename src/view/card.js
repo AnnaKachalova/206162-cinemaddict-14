@@ -1,3 +1,9 @@
+const getGenres = genres => {
+  return `${Object.values(genres)
+    .map(genre => genre)
+    .join(',')}`;
+};
+
 export const createCardTemplate = card => {
   const {
     title,
@@ -6,7 +12,7 @@ export const createCardTemplate = card => {
     rating,
     filmProductionYear,
     duration,
-    genre,
+    genres,
     comments,
     isWatchlist,
     isWatched,
@@ -23,7 +29,7 @@ export const createCardTemplate = card => {
     <p class="film-card__info">
       <span class="film-card__year">${filmProductionYear}</span>
       <span class="film-card__duration">${duration}</span>
-      <span class="film-card__genre">${genre}</span>
+      <span class="film-card__genre">${getGenres(genres)}</span>
     </p>
     <img src="./images/posters/${image}" alt="" class="film-card__poster">
     <p class="film-card__description">${description}</p>

@@ -14,7 +14,7 @@ export const generateFilm = () => {
     rating: 5,
     filmProductionYear: 2019,
     duration: 52,
-    genre: 'horror',
+    genres: ['horror', 'horror'],
     age: 5,
     isWatchlist: true,
     isWatched: false,

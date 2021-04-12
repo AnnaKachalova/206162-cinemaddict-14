@@ -1,3 +1,33 @@
+import dayjs from 'dayjs';
+
+const getGenres = genres => {
+  return `${Object.values(genres)
+    .map(genre => `<span class="film-details__genre">${genre}</span>`)
+    .join('')}`;
+};
+const getComments = comments => {
+  return `${Object.values(comments)
+    .map(comment => {
+      const { emotion, text, autor, data } = comment;
+      return `<li class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-info">
+          <span class="film-details__comment-author">${autor}</span>
+          <span class="film-details__comment-day">${dayjs(data).format(
+            'YYYY/MM/DD HH:mm'
+          )}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
+      </div>
+    </li>`;
+    })
+    .join('')}`;
+};
+
 export const createFilmDetailsTemplate = card => {
   const {
     title,
@@ -12,13 +42,17 @@ export const createFilmDetailsTemplate = card => {
     rating,
     filmProductionYear,
     duration,
-    genre,
+    genres,
     comments,
     age,
     isWatchlist,
     isWatched,
     isFavorite,
   } = card;
+
+  const watchlistChecked = isWatchlist ? 'checked' : '';
+  const watchedChecked = isWatched ? 'checked' : '';
+  const favoriteChecked = isFavorite ? 'checked' : '';
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -71,11 +105,12 @@ export const createFilmDetailsTemplate = card => {
                 <td class="film-details__cell">${country}</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">Genres</td>
+                <td class="film-details__term">${
+                  genres.length > 1 ? 'Genres' : 'Genre'
+                }</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">Drama</span>
-                  <span class="film-details__genre">Film-Noir</span>
-                  <span class="film-details__genre">Mystery</span></td>
+                  ${getGenres(genres)}
+                </td>
               </tr>
             </table>
   
@@ -86,35 +121,25 @@ export const createFilmDetailsTemplate = card => {
         </div>
   
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistChecked}>
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
   
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedChecked}>
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
   
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteChecked}>
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>
   
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${
+            comments.length
+          }</span></h3>
   
           <ul class="film-details__comments-list">
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Interesting setting and a good cast</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">Tim Macoveev</span>
-                  <span class="film-details__comment-day">2019/12/31 23:59</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
+            ${getComments(comments)}
           </ul>
   
           <div class="film-details__new-comment">
