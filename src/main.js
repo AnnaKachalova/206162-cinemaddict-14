@@ -1,27 +1,27 @@
-import { createSiteMenuTemplate } from './view/site-menu.js';
-import { createFilmsContainer } from './view/films-container.js';
-import { createCardTemplate } from './view/card.js';
-import { createProfileTemplate } from './view/profile.js';
-import { createShowMoreButton } from './view/show-more.js';
-import { createTopRatedTemplate } from './view/top-rated.js';
-import { createMostCommentedTemplate } from './view/most-commented.js';
-import { createFilmDetailsTemplate } from './view/film-details.js';
-import { createFooterStatistics } from './view/footer-statistics.js';
+import SiteMenuView from './view/site-menu.js';
+import ProfileView from './view/profile.js';
+import FilmsContainerView from './view/films-container.js';
+import ShowMoreButtonView from './view/show-more.js';
+import FooterStatisticsView from './view/footer-statistics.js';
+import CardView from './view/card.js';
+
+import TopRatedView from './view/top-rated.js';
+import MostCommentedView from './view/most-commented.js';
+import FilmDetailsView from './view/film-details.js';
 
 import { generateFilm } from './mock/film.js';
 import { generateFilter } from './mock/filter.js';
+
+import { renderTemplate, renderElement, RenderPosition } from './utils.js';
 
 const CARD_COUNT = 22;
 const CARD_COUNT_PER_STEP = 5;
 const TOP_RATED_COUNT = 2;
 const MOST_COMMITED_COUNT = 2;
 
-const render = (container, tammplate, place) => {
-  container.insertAdjacentHTML(place, tammplate);
-};
 //******** шапка
 const header = document.querySelector('.header');
-render(header, createProfileTemplate(), 'beforeend');
+renderElement(header, new ProfileView().getElement(), RenderPosition.BEFOREEND);
 
 //******** тело
 const siteMainElement = document.querySelector('.main');
@@ -30,19 +30,21 @@ const siteMainElement = document.querySelector('.main');
 const cards = new Array(CARD_COUNT).fill().map(generateFilm);
 const filters = generateFilter(cards);
 
-render(siteMainElement, createSiteMenuTemplate(filters), 'beforeend'); // Menu (сортировка и фильтры)
-render(siteMainElement, createFilmsContainer(), 'beforeend');
+renderElement(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND); // Menu (сортировка и фильтры)
+
+renderElement(siteMainElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
 const filmsContainer = siteMainElement.querySelector('.films');
 const filmList = filmsContainer.querySelector('.films-list');
 const filmListContainer = filmsContainer.querySelector('.films-list__container');
 
 for (let i = 0; i < Math.min(cards.length, CARD_COUNT_PER_STEP); i++) {
-  render(filmListContainer, createCardTemplate(cards[i]), 'beforeend');
+  console.log(cards[i]);
+  renderElement(filmListContainer, new CardView(cards[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 if (cards.length > CARD_COUNT_PER_STEP) {
   let renderCardCount = CARD_COUNT_PER_STEP;
-  render(filmList, createShowMoreButton(), 'beforeend');
+  renderElement(filmList, new ShowMoreButtonView().getElement(), RenderPosition.BEFOREEND);
 
   const showMoreButton = filmList.querySelector('.films-list__show-more');
 
@@ -50,30 +52,42 @@ if (cards.length > CARD_COUNT_PER_STEP) {
     evt.preventDefault();
     cards
       .slice(renderCardCount, renderCardCount + CARD_COUNT_PER_STEP)
-      .forEach(card => render(filmListContainer, createCardTemplate(card), 'beforeend'));
+      .forEach(card =>
+        renderElement(filmListContainer, new CardView(card).getElement(), RenderPosition.BEFOREEND)
+      );
     renderCardCount += CARD_COUNT_PER_STEP;
 
     if (renderCardCount >= cards.lenght) {
-      showMoreButton.remove();
+      showMoreButton.getElement().remove();
+      showMoreButton.removeElement();
     }
   });
 }
 // Top, Most
-render(filmsContainer, createTopRatedTemplate(), 'beforeend');
+renderElement(filmsContainer, new TopRatedView().getElement(), RenderPosition.BEFOREEND);
 
-render(filmsContainer, createMostCommentedTemplate(), 'beforeend');
+renderElement(filmsContainer, new MostCommentedView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsListsExtra = filmsContainer.querySelectorAll('.films-list--extra');
 const topRatedContainer = filmsListsExtra[0].querySelector('.films-list__container');
 const topMostCommited = filmsListsExtra[1].querySelector('.films-list__container');
 
 for (let i = 0; i < TOP_RATED_COUNT; i++) {
-  render(topRatedContainer, createCardTemplate(cards[i]), 'beforeend');
+  renderElement(topRatedContainer, new CardView(cards[i]).getElement(), RenderPosition.BEFOREEND);
 }
 for (let i = 0; i < MOST_COMMITED_COUNT; i++) {
-  render(topMostCommited, createCardTemplate(cards[i]), 'beforeend');
+  renderElement(topMostCommited, new CardView(cards[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
-render(siteMainElement, createFilmDetailsTemplate(cards[0]), 'beforeend');
+renderElement(
+  siteMainElement,
+  new FilmDetailsView(cards[0]).getElement(),
+  RenderPosition.BEFOREEND
+);
+
 const footer = document.querySelector('.footer__statistics');
-render(footer, createFooterStatistics(cards.length), 'beforeend');
+renderElement(
+  footer,
+  new FooterStatisticsView(cards.length).getElement(),
+  RenderPosition.BEFOREEND
+);

@@ -1,10 +1,12 @@
+import { createElement } from '../utils.js';
+
 const getGenres = genres => {
   return `${Object.values(genres)
     .map(genre => genre)
     .join(',')}`;
 };
 
-export const createCardTemplate = card => {
+const createCardTemplate = card => {
   const {
     title,
     image,
@@ -41,3 +43,22 @@ export const createCardTemplate = card => {
     </div>
   </article>`;
 };
+
+export default class CardView {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+  getTemplate() {
+    return createCardTemplate(this._film);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
