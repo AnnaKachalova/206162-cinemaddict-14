@@ -1,4 +1,4 @@
-import { humanizeCommentDate } from '../utils.js';
+import { humanizeCommentDate, createElement } from '../utils.js';
 
 const getGenres = genres => {
   return `${Object.values(genres)
@@ -26,7 +26,7 @@ const getComments = comments => {
     .join('')}`;
 };
 
-export const createFilmDetailsTemplate = card => {
+const createFilmDetailsTemplate = card => {
   const {
     title,
     titleOriginal,
@@ -103,9 +103,7 @@ export const createFilmDetailsTemplate = card => {
                 <td class="film-details__cell">${country}</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">${
-                  genres.length > 1 ? 'Genres' : 'Genre'
-                }</td>
+                <td class="film-details__term">${genres.length > 1 ? 'Genres' : 'Genre'}</td>
                 <td class="film-details__cell">
                   ${getGenres(genres)}
                 </td>
@@ -175,3 +173,22 @@ export const createFilmDetailsTemplate = card => {
   </section>
   `;
 };
+
+export default class FilmDetails {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
