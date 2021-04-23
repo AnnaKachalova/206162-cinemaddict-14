@@ -1,5 +1,6 @@
-import { humanizeCommentDate } from '../utils.js';
+import { formatCommentDate } from '../utils/card.js';
 import AbstractView from './abstract.js';
+import { remove } from '../utils/render.js';
 
 const getGenres = genres => {
   return `${Object.values(genres)
@@ -18,7 +19,7 @@ const getComments = comments => {
         <p class="film-details__comment-text">${text}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${autor}</span>
-          <span class="film-details__comment-day">${humanizeCommentDate(data)}</span>
+          <span class="film-details__comment-day">${formatCommentDate(data)}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
@@ -180,8 +181,22 @@ export default class FilmDetails extends AbstractView {
     super();
     this._element = null;
     this._film = film;
+    this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
   }
   getTemplate() {
     return createFilmDetailsTemplate(this._film);
+  }
+  _hidePopup() {
+    remove(this);
+    document.querySelector('body').classList.remove('hide-overflow');
+  }
+  _closePopupClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closePopupClick();
+  }
+  setClosePopupClickHandler(callback) {
+    this._callback.closePopupClick = callback;
+    const buttonClose = this.getElement().querySelector('.film-details__close-btn');
+    buttonClose.addEventListener('click', () => this._hidePopup());
   }
 }
