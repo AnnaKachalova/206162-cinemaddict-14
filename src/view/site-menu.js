@@ -1,6 +1,5 @@
-import { createElement } from '../utils.js';
+import AbstractView from './abstract.js';
 
-// main-navigation__item--active
 const getFilters = filters => {
   return filters
     .map(filter => {
@@ -20,21 +19,13 @@ const createSiteMenuTemplate = filters => {
   </nav>`;
 };
 
-export default class SiteMenu {
+export default class SiteMenu extends AbstractView {
   constructor(filters) {
+    super();
     this._filters = filters;
     this._element = null;
   }
   getTemplate() {
     return createSiteMenuTemplate(this._filters);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
